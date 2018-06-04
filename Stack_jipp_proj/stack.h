@@ -8,7 +8,7 @@ struct stack {
 };
 typedef void(*freeData)(void* pdat);                        
 typedef int(compData)(void* type_ptr, void* search_data_ptr);
-typedef void(binSave)(void* type_ptr, std::ofstream&);
+
 
 
 void stackInit(freeData);

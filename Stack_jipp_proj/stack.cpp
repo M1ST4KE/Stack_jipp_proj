@@ -33,19 +33,9 @@ stack* stackPush(void* elem_type) {
         return nullptr;
 
     current->prev = nullptr;
-
-    if (!last)
-        last = current;
-
     current->dataPtr = elem_type;
 
-    stack* p = last;
-    while (p->prev)
-        p = p->prev;
-
-    if (last != current)
-        p->prev = current;
-
+    last = current;
     return current;
 }
 

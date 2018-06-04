@@ -22,5 +22,6 @@ struct MY_STUDENT {
 void* myInit(std::string, int, fieldOfStud);
 void myFree(void*);
 void* myPush(std::string, int, fieldOfStud);
-void myPrint(MY_STUDENT*);
+void myPrint(void*);
+int mySearch(void*, void*);
 //void binSave(void*, std::ofstream&);
