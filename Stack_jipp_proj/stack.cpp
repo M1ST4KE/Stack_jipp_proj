@@ -17,18 +17,18 @@ void stackFree() {
     stack* p = last;
     stack* ptmp = nullptr;
     while (p) {
-        (*ptrFreeDat)(p->type);
+        (*ptrFreeDat)(p->dataPtr);
 
         ptmp = p;
 
         p = p->prev;
 
-        free(ptmp);
+        delete ptmp;
     }
 }
 
 stack* stackPush(void* elem_type) {
-    auto* current = static_cast<stack*>(malloc(sizeof(stack)));
+    auto current = new stack;
     if (current)
         return nullptr;
 
@@ -37,7 +37,7 @@ stack* stackPush(void* elem_type) {
     if (!last)
         last = current;
 
-    current->type = elem_type;
+    current->dataPtr = elem_type;
 
     stack* p = last;
     while (p->prev)
@@ -52,8 +52,13 @@ stack* stackPush(void* elem_type) {
 stack stackPop() {
     stack popItem {};
     if (!last) {
-        popItem.type = nullptr;
+        popItem.dataPtr = nullptr;
         popItem.prev = nullptr;
+    } else {
+        stack* previous = last->prev;
+        popItem.dataPtr = last->dataPtr;
+        delete last;
+        last = previous;
     }
     return popItem;
 }
@@ -66,25 +71,26 @@ void* stackSearch(void* search_data_ptr, compData comp_data_ptr, int first_entry
         p = last;
 
     while (p) {
-        if (!(*comp_data_ptr)(p->type, search_data_ptr))
+        if (!(*comp_data_ptr)(p->dataPtr, search_data_ptr))
             p = p->prev;
         else {
             tmpPtr = p;
             p = p->prev;
-            return tmpPtr->type;
+            return tmpPtr->dataPtr;
         }
     }
     return nullptr;
 }
 
-void stackToBin(binSave write_bin) {
+/*void stackToBin(binSave write_bin) {
     static stack* p;
     std::ofstream output;
     output.open("output.bin", std::ios::binary);
     while (p) {
-        (*write_bin)(p->type);
+        (*write_bin)(p->dataPtr, output);
         p = p->prev;
     }
     //todo oprogramować zapis dla typu student
     output.close();
 }
+*/

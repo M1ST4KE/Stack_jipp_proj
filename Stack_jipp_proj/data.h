@@ -2,6 +2,7 @@
 #include <string>
 
 
+
 enum fieldOfStud {
     kier0,
     kier1,
@@ -18,6 +19,8 @@ struct MY_STUDENT {
     enum fieldOfStud field;
 };
 
-void* myInit(char*, int, fieldOfStud);
+void* myInit(std::string, int, fieldOfStud);
 void myFree(void*);
-void* myPush(char*, int, fieldOfStud);
+void* myPush(std::string, int, fieldOfStud);
+void myPrint(MY_STUDENT*);
+//void binSave(void*, std::ofstream&);

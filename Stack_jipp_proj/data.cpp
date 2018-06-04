@@ -2,23 +2,41 @@
 #include <cstdlib>
 #include <iostream>
 #include "data.h"
+#include <fstream>
+
+
+#pragma warning (disable : 4996)
 
 void* myInit(std::string surname, int year, fieldOfStud field) {
-    auto* pdat = static_cast<MY_STUDENT*>(malloc(sizeof(MY_STUDENT)));
-    if (pdat) {
-        pdat->surname = surname;
-        pdat->birthYear = year;
-        pdat->field = field;
+    auto dataPtr = new MY_STUDENT;
+    if (dataPtr) {
+        dataPtr->surname = surname;
+        dataPtr->birthYear = year;
+        dataPtr->field = field;
     }
-    return static_cast<void*>(pdat);
+    return static_cast<void*>(dataPtr);
 }
 
 void myFree(void* ptr) {
-    MY_STUDENT* pDat = static_cast<MY_STUDENT*>(ptr);
-    if (pDat)
-        free(pDat);
+    auto* dataPtr = static_cast<MY_STUDENT*>(ptr);
+    delete dataPtr;
 }
 
 void* myPush(std::string surname, int year, fieldOfStud field) {
     return myInit(surname, year, field);
+}
+
+void myPrint ( MY_STUDENT* ) {
+    
+}
+
+
+void binSave(void* ptr, std::ofstream& output) {
+    int type = 1;
+    output.write(reinterpret_cast<char*>(&type), sizeof(int));
+
+    auto* curData = static_cast<MY_STUDENT*>(ptr);
+    output.write(reinterpret_cast<char*>(curData), sizeof(MY_STUDENT));
+
+
 }
