@@ -8,7 +8,8 @@ enum fieldOfStud {
     kier3,
     kier4,
     kier5,
-    kier6
+    kier6,
+    vart
 };
 
 struct MY_STUDENT {

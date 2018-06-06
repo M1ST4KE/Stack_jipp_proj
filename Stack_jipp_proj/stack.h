@@ -9,15 +9,15 @@ struct stack {
 #define FILE_NAME "file.bin"
 
 typedef void(*freeData)(void* pdat);                        
-typedef int(compData)(void* type_ptr, void* search_data_ptr);
+typedef int(compData)(void* data_ptr, void* search_data_ptr);
 
 
 
 void stackInit(freeData);
 void stackFree();
 stack* stackPush(void*);
-stack stackPop();
+void* stackPop();
 void* stackSearch(void*, compData, int);
-stack* stackReverse();
-void stackToBin();
-void stackFromBin();
+static stack* stackReverse();
+void stackToBin(void(*)(void*, std::fstream&));
+void stackFromBin(void*(*)(std::fstream&));

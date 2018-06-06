@@ -1,10 +1,12 @@
 ﻿#include "stdafx.h"
 #include "stack.h"
-#include "data.h"
 #include <fstream>
+#include "error.h"
+#include <experimental/filesystem>
 
 static stack* last = nullptr;
 freeData ptrFreeDat;
+static long long write_pos = 0;
 
 void stackInit(freeData p_free_data) {
     last = nullptr;
@@ -24,32 +26,33 @@ void stackFree() {
     }
 }
 
-stack* stackPush(void* elem_type) {
+stack* stackPush(void* data_ptr) {
     auto current = new stack;
     if (!current)
         return nullptr;
 
     current->prev = last;
-    current->dataPtr = elem_type;
+    current->dataPtr = data_ptr;
 
     last = current;
     return current;
 }
 
-stack stackPop() {
-    stack popItem {};
+void* stackPop() {
+    void* popData = nullptr;
+    stack* dataPtr = nullptr;
     if (!last) {
-        popItem.dataPtr = nullptr;
-        popItem.prev = nullptr;
-    } else {
-        stack* previous = last->prev;
-        popItem.dataPtr = last->dataPtr;
-        delete last;
-        last = previous;
+        return popData;
     }
-    return popItem;
+    popData = last->dataPtr;
+    dataPtr = last->prev;
+    delete last;
+    last = dataPtr;
+
+    return popData;
 }
 
+//funkcja wyszukująca dany element w stosie
 void* stackSearch(void* search_data_ptr, compData comp_data_ptr, int first_entry) {
     static stack* p;
     if (first_entry)
@@ -67,49 +70,87 @@ void* stackSearch(void* search_data_ptr, compData comp_data_ptr, int first_entry
     return nullptr;
 }
 
-stack* stackReverse () {
-    stack* revPtr = nullptr;
-    stack* p = last;
-    while (p) {
-        (*ptrFreeDat)(p->dataPtr);
+//funkcja odwracająca stos
+static stack* stackReverse () {
+     void* tmp = stackPop();
+     auto stackReverse = new stack;
+     //tworzę pierwszy element odwróconego stosu
+     stackReverse->prev = nullptr;
+     stackReverse->dataPtr = tmp;
+     //dodaję kolejne elementy do odwróconego stosu
+     while ((tmp = stackPop())) {
+         auto stackTmp = new stack;
+         stackTmp->dataPtr = tmp;
+         stackTmp->prev = stackReverse;
+         stackReverse = stackTmp;
+     }
 
-        revPtr = p;
+    // zwracam wskaźnik do pierwszego elementu odwróconego stosu
+     return stackReverse;
 
-        p = p->prev;
-    }
-
-    return revPtr;
 }
 
+//funkcja zapisująca elementy stosu do pliku binarnego
+void stackToBin(void(*bin_save)(void*, std::fstream&)) {
+    void* dataToSave = nullptr;
 
-void stackToBin(stack* rev_ptr) {
-    static stack* p = rev_ptr;
-    // ReSharper disable once CppInitializedValueIsAlwaysRewritten
-    stack saveItem{};
-    std::fstream file;
-    file.open(FILE_NAME, std::ios::in | std::ios::binary );
-    while (p) {
-
-        stack* previous = rev_ptr->prev;
-        saveItem.dataPtr = rev_ptr->dataPtr;
-        delete rev_ptr;
-        rev_ptr = previous;
-       
-        myBinSave(saveItem.dataPtr, file);
-        p = p->prev;
+    if (!last) {
+        messageFunction(STACK_EMPTY);
+        return;
     }
-    saveItem.dataPtr = nullptr;
-    saveItem.prev = nullptr;
+    //otwieram nowy plik
+    std::fstream file;
+    file.open("file.bin", std::ios::out | std::ios::binary );
+
+    if (!file.is_open()) 
+        messageFunction(ERROR_FILE_OPEN);
+
+    if (!file.good())
+        messageFunction(ERROR_FILE_IO_UNVALIABLE);
+    
+    file.seekp(write_pos);
+
+    stack* revPtr = stackReverse();
+
+    //zapisuję do pliku
+    while (revPtr) {
+
+        stack* previous = revPtr->prev;
+        dataToSave = revPtr->dataPtr;
+        delete revPtr;
+        revPtr = previous;
+       
+        bin_save(dataToSave, file);
+    }
+    dataToSave = nullptr;
+    write_pos = file.tellp();
     file.close();
 }
 
-void stackFromBin () {
+void stackFromBin (void*(*bin_read)(std::fstream&)) {
+
+    //otwieram plik
     std::fstream file;
-    file.open(FILE_NAME, std::ios::out | std::ios::binary);
-    while (!file.eof()) {
+    file.open(FILE_NAME, std::ios::in | std::ios::binary);
+
+    if (!file.is_open()) 
+        messageFunction(ERROR_FILE_OPEN);
+
+    if (!file.good())
+        messageFunction(ERROR_FILE_IO_UNVALIABLE);
+
+    //sprawdzam, czy plik nie jest pusty
+    if (![&file]()->bool{
+        file.seekg(0, std::ios::end);
+        return file.tellg(); }()) {
+        messageFunction(FILE_EMPTY);
+    } else {
         file.seekg(0, std::ios::beg);
-        if(!stackPush(myBinRead(file)));
-        //error
+        while (!file.eof()) {
+            if (!stackPush(bin_read(file)))
+                messageFunction(ERROR_MEM_ALLOC);
+        }
+        write_pos = 0;
     }
     file.close();
 }

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "stack.h"
 #include "data.h"
+#include "error.h"
 
 
 static std::string strtab[] =
@@ -26,14 +27,14 @@ void insert() {
     std::cout << "podaj nazwisko, rok urodzienia i kierunek studiow\n";
     std::cin >> surname >> birthYear >> field;
     void* dataPtr = myPush(surname, birthYear, static_cast<fieldOfStud>(field));
-    if(!stackPush(dataPtr));
-        //error
+    if (!stackPush(dataPtr))
+        criticalError(1);
 }
 
 void pop() {
-    stack tmp = stackPop();
-    myPrint(tmp.dataPtr);
-    myFree(tmp.dataPtr);
+    void* tmp = stackPop();
+    myPrint(tmp);
+    myFree(tmp);
 }
 
 void find() {
@@ -55,14 +56,17 @@ void find() {
             myPrint(dataPtr);
         }
     }
+    if (!dataPtr) {
+        std::cout << "nie znaleziono studenta o nazwisku: " << seakData.surname;
+    }
 }
 
 void save() {
-    stackToBin();
+    stackToBin(myBinSave);
 }
 
 void read() {
-    stackFromBin();
+    stackFromBin(myBinRead);
 }
 
 void clear() {
