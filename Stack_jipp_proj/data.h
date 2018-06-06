@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-
 
 
 enum fieldOfStud {
@@ -24,4 +22,5 @@ void myFree(void*);
 void* myPush(std::string, int, fieldOfStud);
 void myPrint(void*);
 int mySearch(void*, void*);
-//void binSave(void*, std::ofstream&);
+void myBinSave(void*, std::fstream&);
+void* myBinRead(std::fstream&);

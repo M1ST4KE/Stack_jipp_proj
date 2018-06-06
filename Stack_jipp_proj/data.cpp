@@ -1,8 +1,5 @@
 #include "stdafx.h"
-#include <cstdlib>
-#include <iostream>
 #include "data.h"
-#include <fstream>
 
 
 #pragma warning (disable : 4996)
@@ -72,12 +69,12 @@ int mySearch (void* curr_ptr, void* search_data_ptr) {
 }
 
 
-void binSave(void* ptr, std::ofstream& output) {
-    int type = 1;
-    output.write(reinterpret_cast<char*>(&type), sizeof(int));
+void myBinSave(void* ptr, std::fstream& output) {
+    output.write(reinterpret_cast<char*>(ptr), sizeof(MY_STUDENT));
+}
 
-    auto* curData = static_cast<MY_STUDENT*>(ptr);
-    output.write(reinterpret_cast<char*>(curData), sizeof(MY_STUDENT));
-
-
+void* myBinRead ( std::fstream& file) {
+    MY_STUDENT* data = nullptr;
+    file.read(reinterpret_cast<char*>(data), sizeof(MY_STUDENT));
+    return myInit(data->surname, data->birthYear, data->field);
 }

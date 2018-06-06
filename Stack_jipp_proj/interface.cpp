@@ -26,7 +26,8 @@ void insert() {
     std::cout << "podaj nazwisko, rok urodzienia i kierunek studiow\n";
     std::cin >> surname >> birthYear >> field;
     void* dataPtr = myPush(surname, birthYear, static_cast<fieldOfStud>(field));
-    stackPush(dataPtr);
+    if(!stackPush(dataPtr));
+        //error
 }
 
 void pop() {
@@ -37,7 +38,7 @@ void pop() {
 
 void find() {
     std::cout << "podaj nazwisko do znalezienia\n";
-    MY_STUDENT seakData;
+    MY_STUDENT seakData {};
     memset(&seakData, 0, sizeof(MY_STUDENT));
     std::cin >> seakData.surname;
 
@@ -54,6 +55,14 @@ void find() {
             myPrint(dataPtr);
         }
     }
+}
+
+void save() {
+    stackToBin();
+}
+
+void read() {
+    stackFromBin();
 }
 
 void clear() {
