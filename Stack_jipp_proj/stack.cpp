@@ -1,8 +1,7 @@
 ﻿#include "stdafx.h"
 #include "stack.h"
-#include <fstream>
 #include "error.h"
-#include <experimental/filesystem>
+
 
 static stack* last = nullptr;
 freeData ptrFreeDat;
@@ -91,27 +90,36 @@ static stack* stackReverse () {
 }
 
 //funkcja zapisująca elementy stosu do pliku binarnego
-void stackToBin(void(*bin_save)(void*, std::fstream&)) {
+void stackToBin(void(*bin_save)(void*, std::fstream& file)) {
     void* dataToSave = nullptr;
 
     if (!last) {
         messageFunction(STACK_EMPTY);
         return;
     }
+
     //otwieram nowy plik
     std::fstream file;
-    file.open("file.bin", std::ios::out | std::ios::binary );
 
-    if (!file.is_open()) 
+    file.open(FILE_NAME, std::ios::out | std::ios::binary | std::ios::trunc);
+
+    if (!file.is_open())
         messageFunction(ERROR_FILE_OPEN);
 
     if (!file.good())
         messageFunction(ERROR_FILE_IO_UNVALIABLE);
-    
+    // //pierwsze 4 bity to miejsce na zawartość write_pos
+    // file.seekg(0, std::ios::beg);
+    // //jeśli plik nie jest pusty, to odczytuję write_pos
+    // if ([&file]()->bool {
+    //     file.seekg(0, std::ios::end);
+    //     return file.tellg(); }()) 
+    //     file.read(reinterpret_cast<char*>(&write_pos), sizeof(size_t));
+
+
+
     file.seekp(write_pos);
-
     stack* revPtr = stackReverse();
-
     //zapisuję do pliku
     while (revPtr) {
 
@@ -146,11 +154,15 @@ void stackFromBin (void*(*bin_read)(std::fstream&)) {
         messageFunction(FILE_EMPTY);
     } else {
         file.seekg(0, std::ios::beg);
-        while (!file.eof()) {
+        while (file.eof()) {
             if (!stackPush(bin_read(file)))
                 messageFunction(ERROR_MEM_ALLOC);
         }
+        (*ptrFreeDat)(stackPop());
         write_pos = 0;
     }
     file.close();
+
+    //usuwam plik
+    std::remove(FILE_NAME);
 }

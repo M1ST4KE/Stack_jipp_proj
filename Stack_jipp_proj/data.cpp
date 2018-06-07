@@ -55,25 +55,37 @@ int mySearch (void* curr_ptr, void* search_data_ptr) {
 }
 
 
-void myBinSave(void* ptr, std::fstream& output) {
+void myBinSave(void* ptr, std::fstream& file) {
     auto dataPtr = static_cast<MY_STUDENT*>(ptr);
     size_t strSize = sizeof(char) * dataPtr->surname.size();
 
-    output.write(reinterpret_cast<char*>(strSize), sizeof(size_t));
-    output.write(reinterpret_cast<char*>(&dataPtr->surname), strSize);
-    output.write(reinterpret_cast<char*>(dataPtr->birthYear), sizeof(int));
-    output.write(reinterpret_cast<char*>(dataPtr->field), sizeof(enum fieldOfStud));
+    if (!file.good()) {
+        messageFunction(ERROR_FILE_IO_UNVALIABLE);
+    }
+
+    // file << strSize;
+    // file << dataPtr->surname;
+    // file << dataPtr->birthYear;
+    // file << dataPtr->field;
+
+    file.write(reinterpret_cast<char*>(&strSize), sizeof(size_t));
+    file.write(dataPtr->surname.c_str(), strSize);
+    file.write(reinterpret_cast<char*>(&dataPtr->birthYear), sizeof(int));
+    file.write(reinterpret_cast<char*>(&dataPtr->field), sizeof(enum fieldOfStud));
 }
 
 void* myBinRead ( std::fstream& file) {
     size_t strSize = 0;
-    std::string surname;
     int year = 0;
     fieldOfStud field = vart;
 
-    file.read(reinterpret_cast<char*>(strSize), sizeof(size_t));
-    file.read(reinterpret_cast<char*>(&surname), strSize);
-    file.read(reinterpret_cast<char*>(year), sizeof(int));
-    file.read(reinterpret_cast<char*>(field), sizeof(enum fieldOfStud));
+    file.read(reinterpret_cast<char*>(&strSize), sizeof(size_t));
+
+    auto surnameTmp = new char[strSize];
+    file.read(surnameTmp, strSize);
+    file.read(reinterpret_cast<char*>(&year), sizeof(int));
+    file.read(reinterpret_cast<char*>(&field), sizeof(enum fieldOfStud));
+
+    std::string surname = surnameTmp;
     return myInit(surname, year, field);
 }
