@@ -154,15 +154,16 @@ void stackFromBin (void*(*bin_read)(std::fstream&)) {
         messageFunction(FILE_EMPTY);
     } else {
         file.seekg(0, std::ios::beg);
-        while (file.eof()) {
+        while (!file.eof()) {
             if (!stackPush(bin_read(file)))
                 messageFunction(ERROR_MEM_ALLOC);
         }
+        //program wykonuje o jedno przejście za dużo
         (*ptrFreeDat)(stackPop());
         write_pos = 0;
     }
     file.close();
 
-    //usuwam plik
+    //usuwam plik po wczytaniu zawartości
     std::remove(FILE_NAME);
 }

@@ -85,7 +85,8 @@ void* myBinRead ( std::fstream& file) {
     file.read(surnameTmp, strSize);
     file.read(reinterpret_cast<char*>(&year), sizeof(int));
     file.read(reinterpret_cast<char*>(&field), sizeof(enum fieldOfStud));
-
-    std::string surname = surnameTmp;
+    std::string surname;
+    for (int i = 0; i < strSize; i++)
+        surname += surnameTmp[i];
     return myInit(surname, year, field);
 }
