@@ -59,15 +59,6 @@ void myBinSave(void* ptr, std::fstream& file) {
     auto dataPtr = static_cast<MY_STUDENT*>(ptr);
     size_t strSize = sizeof(char) * dataPtr->surname.size();
 
-    if (!file.good()) {
-        messageFunction(ERROR_FILE_IO_UNVALIABLE);
-    }
-
-    // file << strSize;
-    // file << dataPtr->surname;
-    // file << dataPtr->birthYear;
-    // file << dataPtr->field;
-
     file.write(reinterpret_cast<char*>(&strSize), sizeof(size_t));
     file.write(dataPtr->surname.c_str(), strSize);
     file.write(reinterpret_cast<char*>(&dataPtr->birthYear), sizeof(int));

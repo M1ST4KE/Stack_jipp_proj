@@ -5,7 +5,7 @@
 
 static stack* last = nullptr;
 freeData ptrFreeDat;
-static long long write_pos = 0;
+std::streampos write_pos = 0;
 
 void stackInit(freeData p_free_data) {
     last = nullptr;
@@ -147,14 +147,10 @@ void stackFromBin (void*(*bin_read)(std::fstream&)) {
         messageFunction(FILE_EMPTY);
     } else {
         file.seekg(0, std::ios::beg);
-        //for(long long i = 0; i < write_pos; i = file.tellg())
-        while (write_pos != file.tellg()) {
+        while (file.tellg() != write_pos) {
             if (!stackPush(bin_read(file)))
                 messageFunction(ERROR_MEM_ALLOC);
         }
-        //program wykonuje o jedno przejście za dużo
-        (*ptrFreeDat)(stackPop());
-        write_pos = 0;
     }
     file.close();
 
