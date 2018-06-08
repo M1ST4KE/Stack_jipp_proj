@@ -6,9 +6,11 @@
 static std::string my_error_messages[] = {
     "ERROR - Memory allocation error\n",
     "ERROR - File open failture\n",
-    "ERROR - File error occured I/O unvaliable\n",
+    "ERROR - File error occured output unvaliable\n",
+    "ERROR - File error occured input unvaliable\n",
     "Info - Stack empty, no item to pop\n",
     "Info - File empty, no item to read\n",
+    "Info - File doesn't exist"
     "Info - No data to print\n"
 };
 
@@ -27,6 +29,7 @@ MY_DECISION messageFunction(enum MY_MESSAGES message) {
 
 void criticalError(int error_code) {
     stackFree();
+    system("pause");
     exit(error_code);
 }
 

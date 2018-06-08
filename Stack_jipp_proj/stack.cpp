@@ -12,6 +12,7 @@ void stackInit(freeData p_free_data) {
     ptrFreeDat = p_free_data;
 }
 
+//funkcja zwalnia stos i czyści pamięć poszczególnych elementów
 void stackFree() {
     stack* p = last;
     while (p) {
@@ -25,6 +26,7 @@ void stackFree() {
     }
 }
 
+//funkcja dodaje na stos utworzony element
 stack* stackPush(void* data_ptr) {
     auto current = new stack;
     if (!current)
@@ -37,14 +39,14 @@ stack* stackPush(void* data_ptr) {
     return current;
 }
 
+//funkcja usuwa ostatni element ze stosu i zwraca jego zawartość
 void* stackPop() {
     void* popData = nullptr;
-    stack* dataPtr = nullptr;
     if (!last) {
         return popData;
     }
     popData = last->dataPtr;
-    dataPtr = last->prev;
+    stack* dataPtr = last->prev;
     delete last;
     last = dataPtr;
 
@@ -91,7 +93,7 @@ static stack* stackReverse () {
 
 //funkcja zapisująca elementy stosu do pliku binarnego
 void stackToBin(void(*bin_save)(void*, std::fstream& file)) {
-    void* dataToSave = nullptr;
+    void* dataToSave;
 
     if (!last) {
         messageFunction(STACK_EMPTY);
@@ -101,22 +103,13 @@ void stackToBin(void(*bin_save)(void*, std::fstream& file)) {
     //otwieram nowy plik
     std::fstream file;
 
-    file.open(FILE_NAME, std::ios::out | std::ios::binary | std::ios::trunc);
+    file.open(MY_FILE_NAME, std::ios::out | std::ios::binary | std::ios::app);
 
     if (!file.is_open())
         messageFunction(ERROR_FILE_OPEN);
 
     if (!file.good())
-        messageFunction(ERROR_FILE_IO_UNVALIABLE);
-    // //pierwsze 4 bity to miejsce na zawartość write_pos
-    // file.seekg(0, std::ios::beg);
-    // //jeśli plik nie jest pusty, to odczytuję write_pos
-    // if ([&file]()->bool {
-    //     file.seekg(0, std::ios::end);
-    //     return file.tellg(); }()) 
-    //     file.read(reinterpret_cast<char*>(&write_pos), sizeof(size_t));
-
-
+        messageFunction(ERROR_FILE_OUT_UNVALIABLE);
 
     file.seekp(write_pos);
     stack* revPtr = stackReverse();
@@ -139,22 +132,23 @@ void stackFromBin (void*(*bin_read)(std::fstream&)) {
 
     //otwieram plik
     std::fstream file;
-    file.open(FILE_NAME, std::ios::in | std::ios::binary);
-
-    if (!file.is_open()) 
-        messageFunction(ERROR_FILE_OPEN);
+    file.open(MY_FILE_NAME, std::ios::in | std::ios::binary);
 
     if (!file.good())
-        messageFunction(ERROR_FILE_IO_UNVALIABLE);
+        messageFunction(ERROR_FILE_IN_UNVALIABLE);
+
+    if (!file.is_open())
+        messageFunction(FILE_NOT_EXIST);
 
     //sprawdzam, czy plik nie jest pusty
     if (![&file]()->bool{
         file.seekg(0, std::ios::end);
-        return file.tellg(); }()) {
+        return write_pos = file.tellg(); }()) {
         messageFunction(FILE_EMPTY);
     } else {
         file.seekg(0, std::ios::beg);
-        while (!file.eof()) {
+        //for(long long i = 0; i < write_pos; i = file.tellg())
+        while (write_pos != file.tellg()) {
             if (!stackPush(bin_read(file)))
                 messageFunction(ERROR_MEM_ALLOC);
         }
@@ -164,6 +158,9 @@ void stackFromBin (void*(*bin_read)(std::fstream&)) {
     }
     file.close();
 
+#ifndef DEBUG_FLAG
     //usuwam plik po wczytaniu zawartości
-    std::remove(FILE_NAME);
+    std::remove(MY_FILE_NAME);
+#endif
+
 }

@@ -28,7 +28,7 @@ void insert() {
     std::cin >> surname >> birthYear >> field;
     void* dataPtr = myPush(surname, birthYear, static_cast<fieldOfStud>(field));
     if (!stackPush(dataPtr))
-        criticalError(1);
+        messageFunction(ERROR_MEM_ALLOC);
 }
 
 void pop() {
