@@ -108,8 +108,7 @@ void stackToBin(void(*bin_save)(void*, std::fstream& file)) {
 
     if (!file.is_open())
         messageFunction(ERROR_FILE_OPEN);
-
-    if (!file.good())
+    else if (!file.good())
         messageFunction(ERROR_FILE_OUT_UNVALIABLE);
 
     file.seekp(write_pos);
@@ -135,11 +134,10 @@ void stackFromBin (void*(*bin_read)(std::fstream&)) {
     std::fstream file;
     file.open(MY_FILE_NAME, std::ios::in | std::ios::binary);
 
-    if (!file.good())
-        messageFunction(ERROR_FILE_IN_UNVALIABLE);
-
     if (!file.is_open())
         messageFunction(FILE_NOT_EXIST);
+    else if (!file.good())
+        messageFunction(ERROR_FILE_IN_UNVALIABLE);
 
     //sprawdzam, czy plik nie jest pusty
     if (![&file]()->bool{
