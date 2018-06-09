@@ -24,6 +24,7 @@ void stackFree() {
 
         delete ptmp;
     }
+    last = nullptr;
 }
 
 //funkcja dodaje na stos utworzony element

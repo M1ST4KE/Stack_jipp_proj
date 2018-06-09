@@ -40,25 +40,26 @@ void pop() {
 void find() {
     std::cout << "podaj nazwisko do znalezienia\n";
     MY_STUDENT seakData {};
-    memset(&seakData, 0, sizeof(MY_STUDENT));
     std::cin >> seakData.surname;
-
     void* dataPtr = stackSearch(&seakData, mySearch, 1);
 
     if (dataPtr) {
         std::cout << "znaleziono: ";
         myPrint(dataPtr);
-    }
-    while (dataPtr) {
-        dataPtr = stackSearch(&seakData, mySearch, 0);
-        if (dataPtr) {
-            std::cout << "znaleziono: ";
-            myPrint(dataPtr);
+
+        while (dataPtr) {
+            dataPtr = stackSearch(&seakData, mySearch, 0);
+            if (dataPtr) {
+                std::cout << "znaleziono: ";
+                myPrint(dataPtr);
+            }
         }
+    } 
+    else
+    {
+        std::cout << "nie znaleziono studenta o nazwisku: " << seakData.surname << "\n";
     }
-    if (!dataPtr) {
-        std::cout << "nie znaleziono studenta o nazwisku: " << seakData.surname;
-    }
+  
 }
 
 void save() {

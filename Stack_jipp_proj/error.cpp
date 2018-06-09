@@ -10,8 +10,9 @@ static std::string my_error_messages[] = {
     "ERROR - File error occured input unvaliable\n",
     "Info - Stack empty, no item to pop\n",
     "Info - File empty, no item to read\n",
-    "Info - File doesn't exist"
-    "Info - No data to print\n"
+    "Info - File doesn't exist\n",
+    "Info - No data to print\n",
+    "Info - invalid decision\n"
 };
 
 

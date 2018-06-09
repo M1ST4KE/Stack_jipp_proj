@@ -1,16 +1,17 @@
 #pragma once
 
 //#define DEBUG_FLAG
+#define MY_FILE_NAME "file.bin"
 
 struct stack {
     void* dataPtr;
     stack* prev;
 };
 
-#define MY_FILE_NAME "file.bin"
+
 
 typedef void(*freeData)(void* pdat);                        
-typedef int(compData)(void* data_ptr, void* search_data_ptr);
+typedef bool(compData)(void* data_ptr, void* search_data_ptr);
 
 
 

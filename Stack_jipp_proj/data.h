@@ -22,6 +22,6 @@ void* myInit(std::string, int, fieldOfStud);
 void myFree(void*);
 void* myPush(std::string, int, fieldOfStud);
 void myPrint(void*);
-int mySearch(void*, void*);
+bool mySearch(void*, void*);
 void myBinSave(void*, std::fstream&);
 void* myBinRead(std::fstream&);

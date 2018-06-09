@@ -41,17 +41,17 @@ void myPrint ( void* data_ptr) {
     if (currentPtr) {
         std::cout << "nazwisko:      " << currentPtr->surname << '\n';
         std::cout << "rok urodzenia: " << currentPtr->birthYear << '\n';
-        std::cout << "kierunek:      " << kierunki[currentPtr->field] << '\n';
+        std::cout << "kierunek:      " << kierunki[currentPtr->field] << '\n'; //todo: popraw!!!
     } else  
         messageFunction(NO_DATA_TO_PRINT);
 }
 
-int mySearch (void* curr_ptr, void* search_data_ptr) {
+bool mySearch (void* curr_ptr, void* search_data_ptr) {
     auto currPtr = static_cast<MY_STUDENT*>(curr_ptr);
     auto searchDataPtr = static_cast<MY_STUDENT*>(search_data_ptr);
-    if (currPtr == searchDataPtr)
-        return 1;
-    return 0;
+    if (currPtr->surname == searchDataPtr->surname)             // NOLINT(readability-simplify-boolean-expr)
+        return true;                                            // NOLINT(readability-simplify-boolean-expr)
+    return false;
 }
 
 
