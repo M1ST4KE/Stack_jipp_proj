@@ -35,13 +35,13 @@ void* myPush(std::string surname, int year, fieldOfStud field) {
 }
 
 void myPrint ( void* data_ptr) {
-
     auto currentPtr = static_cast<MY_STUDENT*>(data_ptr);
 
     if (currentPtr) {
         std::cout << "nazwisko:      " << currentPtr->surname << '\n';
         std::cout << "rok urodzenia: " << currentPtr->birthYear << '\n';
-        std::cout << "kierunek:      " << kierunki[currentPtr->field] << '\n'; //todo: popraw!!!
+        std::cout << "kierunek:      " << kierunki[currentPtr->field] << '\n';
+        system("pause");
     } else  
         messageFunction(NO_DATA_TO_PRINT);
 }
@@ -76,8 +76,10 @@ void* myBinRead ( std::fstream& file) {
     file.read(surnameTmp, strSize);
     file.read(reinterpret_cast<char*>(&year), sizeof(int));
     file.read(reinterpret_cast<char*>(&field), sizeof(enum fieldOfStud));
+
     std::string surname;
     for (int i = 0; i < strSize; i++)
         surname += surnameTmp[i];
+
     return myInit(surname, year, field);
 }

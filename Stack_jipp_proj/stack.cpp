@@ -129,7 +129,6 @@ void stackToBin(void(*bin_save)(void*, std::fstream& file)) {
 }
 
 void stackFromBin (void*(*bin_read)(std::fstream&)) {
-
     //otwieram plik
     std::fstream file;
     file.open(MY_FILE_NAME, std::ios::in | std::ios::binary);

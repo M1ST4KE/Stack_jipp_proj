@@ -16,6 +16,7 @@ static std::string strtab[] =
 };
 
 void menu() {
+    system("CLS");
     for (size_t i = 0; i < _vart; ++i) std::cout << strtab[i];
 
 }
@@ -24,6 +25,8 @@ void insert() {
     std::string surname;
     int birthYear;
     int field;
+
+    system("CLS");
     std::cout << "podaj nazwisko, rok urodzienia i kierunek studiow\n";
     std::cin >> surname >> birthYear >> field;
     void* dataPtr = myPush(surname, birthYear, static_cast<fieldOfStud>(field));
@@ -38,6 +41,7 @@ void pop() {
 }
 
 void find() {
+    system("CLS");
     std::cout << "podaj nazwisko do znalezienia\n";
     MY_STUDENT seakData {};
     std::cin >> seakData.surname;
@@ -59,7 +63,7 @@ void find() {
     {
         std::cout << "nie znaleziono studenta o nazwisku: " << seakData.surname << "\n";
     }
-  
+    system("pause");
 }
 
 void save() {

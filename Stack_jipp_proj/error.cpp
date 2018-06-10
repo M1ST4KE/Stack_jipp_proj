@@ -19,7 +19,9 @@ static std::string my_error_messages[] = {
 MY_DECISION messageFunction(enum MY_MESSAGES message) {
     MY_DECISION returnValue = MY_CONTINUE;
 
+    system("CLS");
     std::cout << my_error_messages[message];
+    system("pause");
 
     if (my_error_messages[message][0] == 'E') {
         returnValue = MY_BREAK;
@@ -30,7 +32,6 @@ MY_DECISION messageFunction(enum MY_MESSAGES message) {
 
 void criticalError(int error_code) {
     stackFree();
-    system("pause");
     exit(error_code);
 }
 
